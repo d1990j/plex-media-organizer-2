@@ -29,7 +29,10 @@ def main(page: ft.Page):
 
     def stage_file():
         """Stage selected file for naming."""
-        print("Stage file selected")
+        if tv_movie_switch.value: # If True, is Movie, otherwise is TV
+            print("Stage start for Movie file")
+        else:
+            print("Stage start for TV file")
 
     def commit_files():
         """Commit the staged files, completing change"""
