@@ -1,8 +1,8 @@
 import flet as ft
 from state import AppState
-from ui import ui
+from ui import UI
 
-class logic:
-    def __init__(self, state: AppState, ui: ui):
+class Logic:
+    def __init__(self, state: AppState, ui: UI):
         self.state = state
         self.ui = ui

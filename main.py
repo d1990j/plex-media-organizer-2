@@ -1,11 +1,15 @@
 import flet as ft
 import os
 from state import AppState
+from logic import Logic
+from ui import UI
 import subprocess
 
 def main(page: ft.Page):
 
     state = AppState()
+    ui = UI(page)
+    logic = Logic(state, ui)
 
     ##################### LOGIC ############################
     async def browse_source_directory(e: ft.Event[ft.Button]):

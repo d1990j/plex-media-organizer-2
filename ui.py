@@ -1,5 +1,5 @@
 import flet as ft
 
-class ui:
+class UI:
     def __init__(self, page: ft.Page):
         pass
