@@ -6,5 +6,5 @@ class AppState:
         self.selected_file_index = 0
         self.media_files = []
         self.staged_list = []
-        self.source_directory_path = ft.Text(value="Not set")
-        self.destination_directory_path = ft.Text(value="Not set")
+        self.source_directory_path = ""
+        self.destination_directory_path = ""

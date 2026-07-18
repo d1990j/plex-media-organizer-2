@@ -1,7 +1,4 @@
 import flet as ft
-import os
-import importlib.util
-import sys
 from state import AppState
 from logic import Logic
 from ui import UI

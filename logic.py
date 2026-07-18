@@ -11,9 +11,11 @@ class Logic:
     async def browse_source_directory(self, e: ft.Event[ft.Button], ui: ui.UI):
         """Open a dialog to select a directory"""
         print("Browse source directory selected") # Testing
-        self.state.source_directory_path.value = await ft.FilePicker().get_directory_path() or self.state.source_directory_path.value
-        print(f"Source directory set to {self.state.source_directory_path.value}")
-        self.state.source_directory_path.update()
+        self.state.source_directory_path = await ft.FilePicker().get_directory_path() or self.state.source_directory_path
+        print(f"Source directory set to {self.state.source_directory_path}")
+        # Update the source directory text
+        ui.source_directory_path.value = self.state.source_directory_path
+        ui.source_directory_path.update()
         self.load_media_files(ui.file_list)
         # toggle the commit button if a directory is chosen for source and destination
         self.toggle_commit_button()
@@ -70,13 +72,13 @@ class Logic:
     def load_media_files(self, file_list: ft.ListView):
         """Attempt to load the media files from directory"""
         # If a directory is chosen
-        if self.state.source_directory_path.value != "No path selected":
+        if self.state.source_directory_path != "No path selected":
             # Reset media files
             self.state.media_files.clear()
             file_list.controls.clear()
 
             # Find each file in the chosen directory that has the correct filetype and add to media files 
-            for file in os.listdir(self.state.source_directory_path.value):
+            for file in os.listdir(self.state.source_directory_path):
                     if file.lower().endswith((".mp4", ".mkv", ".avi", ".mov", ".mp3", ".flac")):
                         self.state.media_files.append({"name": file, "tv_movie": False, "new_name": "", "year": "", "season": "", "episode": ""})
 

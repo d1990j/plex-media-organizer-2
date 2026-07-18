@@ -9,7 +9,7 @@ class UI:
         ########################## Buttons ############################
         self.source_button = ft.Button(
             content="Browse",
-            #on_click=browse_source_directory
+            on_click=self.browse_source_directory
         )
         self.destination_button = ft.Button(
             content="Browse",
@@ -68,12 +68,20 @@ class UI:
             #disabled=tv_movie_switch.value
         )
 
+        ########################## Texts ##############################
+        self.source_directory_path = ft.Text(
+            "None Selected"
+        )
+        self.destination_directory_path = ft.Text(
+            "None Selected"
+        )
+
         ########################## Top row container ########################
         self.top_container = ft.Container(
             content=ft.Row(
                 [
                     self.source_button,
-                    #state.source_directory_path
+                    self.source_directory_path
                 ]
             ),
             bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST,
@@ -139,7 +147,7 @@ class UI:
             content=ft.Row(
                 [
                     self.destination_button,
-                    #state.destination_directory_path,
+                    self.destination_directory_path,
                     ft.Container(expand=True), # Add space between
                     self.commit_button
                 ]
@@ -150,6 +158,9 @@ class UI:
             col=12
         )
 
+    async def browse_source_directory(self, e):
+        print("Browse source directory clicked")
+        await self.logic.browse_source_directory(e, self)
     
     
     ########################### Add items to page #############################
