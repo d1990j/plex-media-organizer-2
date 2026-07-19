@@ -1,10 +1,11 @@
 import flet as ft
 import logic
+import state
 
 class UI:
-    def __init__(self, page: ft.Page, logic: logic.Logic):
+    def __init__(self, page: ft.Page, state: state.AppState):
         self.page = page
-        self.logic = logic
+        self.state = state
     
         ########################## Buttons ############################
         self.source_button = ft.Button(
@@ -160,15 +161,15 @@ class UI:
 
     async def browse_source_directory_clicked(self, e):
         print("Browse source directory clicked")
-        await self.logic.browse_source_directory(self)
+        await logic.browse_source_directory(self, self.state)
 
     async def browse_destination_directory_clicked(self):
         print("Browse destination directory clicked")
-        await self.logic.browse_destination_directory(self)
+        await logic.browse_destination_directory(self, self.state)
 
     def on_source_file_clicked(self, e: ft.Event[ft.ListTile]):
         print("Source file clicked at index:", e.control.data)
-        self.logic.select_source_file(e.control.data, self)
+        logic.select_source_file(e.control.data, self, self.state)
 
     def fill_selected_file_fields(self, title: str, year: str, tv_movie: bool, season: str, episode: str):
         self.title_textfield.value = title

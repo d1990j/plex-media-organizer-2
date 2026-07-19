@@ -1,12 +1,10 @@
 import flet as ft
 from state import AppState
-from logic import Logic
 from ui import UI
 
 def main(page: ft.Page):
     state = AppState()
-    logic_ref = Logic(state)
-    ui = UI(page, logic_ref)
+    ui = UI(page, state)
 
     # Build the page
     ui.build_page()
