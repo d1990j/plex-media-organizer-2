@@ -2,6 +2,7 @@ import flet as ft
 import state
 import os
 import ui
+import subprocess
 
 ##################### LOGIC ############################
 async def browse_source_directory(ui: ui.UI, state: state.AppState):
@@ -63,7 +64,7 @@ def load_media_files(ui: ui.UI, state: state.AppState):
         for index, item in enumerate(state.media_files):
             tile = ft.ListTile(
                     title=ft.Text(item["name"]),
-                    on_click=ui.on_source_file_clicked,
+                    on_click=ui.on_click_source_file_tile,
                     data=index,
                     selected_color=ft.Colors.BLUE_500
             )
@@ -75,3 +76,20 @@ def load_media_files(ui: ui.UI, state: state.AppState):
             
             #Update the file list
             ui.file_list.update()
+
+def play_media_file(state: state.AppState):
+        """Attempt to play the media file"""
+        try:
+            index = state.selected_file_index
+            file = state.media_files[index]["name"]
+            filepath = os.path.join(state.source_directory_path, file)
+            print(f"Filepath created: {filepath}")
+            # Determine OS, nt for windows, posix for mac/linux
+            if os.name == "nt":
+                print("OS set to nt")
+                os.startfile(filepath)
+            elif os.name == "posix":
+                print("OS set to posix")
+                subprocess.run(["open", filepath])
+        except:
+            print("Unable to play media")

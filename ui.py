@@ -10,15 +10,15 @@ class UI:
         ########################## Buttons ############################
         self.source_button = ft.Button(
             content="Browse",
-            on_click=self.browse_source_directory_clicked
+            on_click=self.on_click_browse_source_file
         )
         self.destination_button = ft.Button(
             content="Browse",
-            on_click=self.browse_destination_directory_clicked
+            on_click=self.on_click_browse_destination_file
         )
         self.play_button = ft.Button(
             content="Play",
-            #on_click=play_media_file
+            on_click=self.on_click_play
         )
         self.stage_button = ft.Button(
             content="Stage",
@@ -26,7 +26,7 @@ class UI:
         )
         self.commit_button = ft.Button(
             content="Commit",
-            #on_click=commit_files,
+            on_click=self.on_click_commit,
             disabled=True
         )
 
@@ -159,17 +159,28 @@ class UI:
             col=12
         )
 
-    async def browse_source_directory_clicked(self, e):
+
+    ####################### On Click Actions ###############################
+    async def on_click_browse_source_file(self, e):
         print("Browse source directory clicked")
         await logic.browse_source_directory(self, self.state)
 
-    async def browse_destination_directory_clicked(self):
+    async def on_click_browse_destination_file(self):
         print("Browse destination directory clicked")
         await logic.browse_destination_directory(self, self.state)
 
-    def on_source_file_clicked(self, e: ft.Event[ft.ListTile]):
+    def on_click_source_file_tile(self, e: ft.Event[ft.ListTile]):
         print("Source file clicked at index:", e.control.data)
         logic.select_source_file(e.control.data, self, self.state)
+
+    def on_click_commit(self):
+        print("commit clicked")
+
+    def on_click_play(self):
+        print("play button clicked")
+        logic.play_media_file(self.state)
+
+    ####################### General Functions ################################
 
     def fill_selected_file_fields(self, title: str, year: str, tv_movie: bool, season: str, episode: str):
         self.title_textfield.value = title
