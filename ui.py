@@ -160,12 +160,23 @@ class UI:
 
     async def browse_source_directory_clicked(self, e):
         print("Browse source directory clicked")
-        await self.logic.browse_source_directory(e, self)
+        await self.logic.browse_source_directory(self)
 
     async def browse_destination_directory_clicked(self):
         print("Browse destination directory clicked")
         await self.logic.browse_destination_directory(self)
-    
+
+    def on_source_file_clicked(self, e: ft.Event[ft.ListTile]):
+        print("Source file clicked at index:", e.control.data)
+        self.logic.select_source_file(e.control.data, self)
+
+    def fill_selected_file_fields(self, title: str, year: str, tv_movie: bool, season: str, episode: str):
+        self.title_textfield.value = title
+        self.year_textfield.value = year
+        self.tv_movie_switch.value = tv_movie
+        self.season_textfield.value = season
+        self.episode_textfield.value = episode
+        self.selected_info_container.update()
     
     ########################### Add items to page #############################
     def build_page(self):

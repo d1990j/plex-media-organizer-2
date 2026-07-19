@@ -8,7 +8,7 @@ class Logic:
         self.state = state
 
     ##################### LOGIC ############################
-    async def browse_source_directory(self, e: ft.Event[ft.Button], ui: ui.UI):
+    async def browse_source_directory(self, ui: ui.UI):
         """Open a dialog to select a directory"""
         print("Browse source directory selected") # Testing
         self.state.source_directory_path = await ft.FilePicker().get_directory_path() or self.state.source_directory_path
@@ -16,7 +16,7 @@ class Logic:
         # Update the source directory text
         ui.source_directory_path.value = self.state.source_directory_path
         ui.source_directory_path.update()
-        self.load_media_files(ui.file_list)
+        self.load_media_files(ui)
         # toggle the commit button if a directory is chosen for source and destination
         self.toggle_commit_button()
 
@@ -42,42 +42,32 @@ class Logic:
     #     """Commit the staged files, completing change"""
     #     print("Commit files selected")
 
-    # def source_file_clicked(self, e: ft.Event[ft.ListTile]):
-    #     index = e.control.data
-    #     print(f"source file clicked at index {index}")
-    #     # update the selected file index
-    #     state.selected_file_index = index
+    def select_source_file(self, index: int, ui: ui.UI):
+        # update the selected file index
+        self.state.selected_file_index = index
 
-    #     # reload the files to update highlights
-    #     load_media_files()
+        # reload the files to update highlights
+        self.load_media_files(ui)
 
-    #     # Fill the text fields in selected file info
-    #     fill_selected_file_fields(
-    #         state.media_files[index]["name"],
-    #         state.media_files[index]["year"],
-    #         state.media_files[index]["tv_movie"],
-    #         state.media_files[index]["season"],
-    #         state.media_files[index]["episode"]
-    #     )
-
-    # def fill_selected_file_fields(title: str, year: str, tv_movie: bool, season: str, episode: str):
-    #     title_textfield.value = title
-    #     year_textfield.value = year
-    #     tv_movie_switch.value = tv_movie
-    #     season_textfield.value = season
-    #     episode_textfield.value = episode
-    #     selected_info_container.update()
+        # Fill the text fields in selected file info
+        ui.fill_selected_file_fields(
+            self.state.media_files[index]["name"],
+            self.state.media_files[index]["year"],
+            self.state.media_files[index]["tv_movie"],
+            self.state.media_files[index]["season"],
+            self.state.media_files[index]["episode"]
+        )
 
     def toggle_commit_button(self):
           print("Commit button pressed")
 
-    def load_media_files(self, file_list: ft.ListView):
+    def load_media_files(self, ui: ui.UI):
         """Attempt to load the media files from directory"""
         # If a directory is chosen
         if self.state.source_directory_path != "No path selected":
             # Reset media files
             self.state.media_files.clear()
-            file_list.controls.clear()
+            ui.file_list.controls.clear()
 
             # Find each file in the chosen directory that has the correct filetype and add to media files 
             for file in os.listdir(self.state.source_directory_path):
@@ -88,7 +78,7 @@ class Logic:
             for index, item in enumerate(self.state.media_files):
                 tile = ft.ListTile(
                         title=ft.Text(item["name"]),
-                        #on_click=self.source_file_clicked,
+                        on_click=ui.on_source_file_clicked,
                         data=index,
                         selected_color=ft.Colors.BLUE_500
                 )
@@ -96,10 +86,10 @@ class Logic:
                     tile.selected = True
                 else:
                     tile.selected = False
-                file_list.controls.append(tile)
+                ui.file_list.controls.append(tile)
                 
                 #Update the file list
-                file_list.update()
+                ui.file_list.update()
 
     # def play_media_file():
     #     """Attempt to play the media file"""
