@@ -20,14 +20,16 @@ class Logic:
         # toggle the commit button if a directory is chosen for source and destination
         self.toggle_commit_button()
 
-    # async def browse_destination_directory():
-    #     """Open a dialog to select a directory"""
-    #     print("Browse destination directory selected") # testing
-    #     state.destination_directory_path.value = await ft.FilePicker().get_directory_path() or state.destination_directory_path.value
-    #     print(f"Destination directory set to {state.destination_directory_path.value}")
-    #     state.destination_directory_path.update()
-    #     # toggle the commit button if a directory is chosen for source and destination
-    #     toggle_commit_button()
+    async def browse_destination_directory(self, ui: ui.UI):
+        """Open a dialog to select a directory"""
+        print("Browse destination directory selected") # testing
+        self.state.destination_directory_path = await ft.FilePicker().get_directory_path() or self.state.destination_directory_path
+        print(f"Destination directory set to {self.state.destination_directory_path}")
+        # Update the destination directory text in UI
+        ui.destination_directory_path.value = self.state.destination_directory_path
+        ui.destination_directory_path.update()
+        # toggle the commit button if a directory is chosen for source and destination
+        self.toggle_commit_button()
 
     # def stage_file():
     #     """Stage selected file for naming."""

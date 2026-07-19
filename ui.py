@@ -9,11 +9,11 @@ class UI:
         ########################## Buttons ############################
         self.source_button = ft.Button(
             content="Browse",
-            on_click=self.browse_source_directory
+            on_click=self.browse_source_directory_clicked
         )
         self.destination_button = ft.Button(
             content="Browse",
-            #on_click=browse_destination_directory
+            on_click=self.browse_destination_directory_clicked
         )
         self.play_button = ft.Button(
             content="Play",
@@ -158,9 +158,13 @@ class UI:
             col=12
         )
 
-    async def browse_source_directory(self, e):
+    async def browse_source_directory_clicked(self, e):
         print("Browse source directory clicked")
         await self.logic.browse_source_directory(e, self)
+
+    async def browse_destination_directory_clicked(self):
+        print("Browse destination directory clicked")
+        await self.logic.browse_destination_directory(self)
     
     
     ########################### Add items to page #############################
