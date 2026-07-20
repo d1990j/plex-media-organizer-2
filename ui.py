@@ -22,7 +22,7 @@ class UI:
         )
         self.stage_button = ft.Button(
             content="Stage",
-            #on_click=stage_file
+            on_click=self.on_click_stage_file
         )
         self.commit_button = ft.Button(
             content="Commit",
@@ -48,7 +48,7 @@ class UI:
         self.tv_movie_switch = ft.Switch(
             label="TV/Movie", 
             value=False,
-            #on_change=update_on_tv_movie_switch
+            on_change=self.on_click_tv_movie_switch
         )
 
         ##################### Text Fields ###########################
@@ -179,6 +179,21 @@ class UI:
     def on_click_play(self):
         print("play button clicked")
         logic.play_media_file(self.state)
+
+    def on_click_tv_movie_switch(self):
+        """Update the text boxes upon switch change"""
+        self.season_textfield.disabled = self.tv_movie_switch.value
+        self.episode_textfield.disabled = self.tv_movie_switch.value
+        print(f"Season/Episode textfields set to: {self.season_textfield.disabled}")
+        self.season_textfield.update()
+        self.episode_textfield.update()
+
+    def on_click_stage_file(self):
+        """Stage selected file for naming."""
+        if self.tv_movie_switch.value: # If True, is Movie, otherwise is TV
+            print("Stage start for Movie file")
+        else:
+            print("Stage start for TV file")
 
     ####################### General Functions ################################
 
