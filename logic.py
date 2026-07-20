@@ -39,7 +39,7 @@ def select_source_file(index: int, ui: ui.UI, state: state.AppState):
         ui.fill_selected_file_fields(
             state.media_files[index]["name"],
             state.media_files[index]["year"],
-            state.media_files[index]["tv_movie"],
+            state.media_files[index]["type"],
             state.media_files[index]["season"],
             state.media_files[index]["episode"]
         )
@@ -58,7 +58,7 @@ def load_media_files(ui: ui.UI, state: state.AppState):
         # Find each file in the chosen directory that has the correct filetype and add to media files 
         for file in os.listdir(state.source_directory_path):
                 if file.lower().endswith((".mp4", ".mkv", ".avi", ".mov", ".mp3", ".flac")):
-                    state.media_files.append({"name": file, "tv_movie": False, "new_name": "", "year": "", "season": "", "episode": ""})
+                    state.media_files.append({"name": file, "type": "", "new_name": "", "year": "", "season": "", "episode": ""})
 
         # Cycle through each item in the files and add the name to the list
         for index, item in enumerate(state.media_files):
@@ -76,6 +76,32 @@ def load_media_files(ui: ui.UI, state: state.AppState):
             
             #Update the file list
             ui.file_list.update()
+
+def update_staged_files(ui: ui.UI, state: state.AppState):
+    # Clear the list and the listview
+    state.staged_list.clear()
+    ui.stage_list.controls.clear()
+
+    # Fill list with files that have a value for type
+    for file in state.media_files:
+        if file["type"] != "":
+            state.staged_list.append(file)
+
+    # Fill listview with items in stage list
+    for index, item in enumerate(state.staged_list):
+        tile = ft.ListTile(
+            title=ft.Text(item["name"]),
+            #on_click
+            data=index,
+            selected_color=ft.Colors.BLUE_500
+        )
+            
+        # Add tile to the stage list
+        ui.stage_list.controls.append(tile)
+
+    # Update the stage list
+    ui.stage_list.update()
+     
 
 def play_media_file(state: state.AppState):
         """Attempt to play the media file"""
