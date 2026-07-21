@@ -28,18 +28,19 @@ async def browse_destination_directory(ui: ui.UI, state: state.AppState):
     # toggle the commit button if a directory is chosen for source and destination
     toggle_commit_button()
 
-def select_file(index: int, ui: ui.UI, state: state.AppState, list: str):
+def select_file(index: int, ui: ui.UI, state: state.AppState, list_type: str):
         """Sets the selected file index, updates the source file list, populates the selected file fields."""
         # update the selected file index
         state.selected_file_index["index"] = index
-        state.selected_file_index["type"] = "source"
+        state.selected_file_index["type"] = list_type
 
         # reload the files to update highlights
         update_source_file_list(ui, state)
+        update_staged_files(ui, state)
 
         # Fill the text fields in selected file info
         ui.fill_selected_file_fields(
-            state.media_files[index]["name"],
+            state.media_files[index]["name"] if list_type == "source" else state.media_files[index]["new_name"],
             state.media_files[index]["year"],
             state.media_files[index]["type"],
             state.media_files[index]["season"],
@@ -108,11 +109,17 @@ def update_staged_files(ui: ui.UI, state: state.AppState):
     # Fill listview with items in stage list
     for index, item in enumerate(state.staged_list):
         tile = ft.ListTile(
-            title=ft.Text(item["name"]),
-            #on_click
+            title=ft.Text(item["new_name"]),
+            on_click=ui.on_click_staged_file_tile,
             data=index,
             selected_color=ft.Colors.BLUE_500
         )
+
+        # If the current selected file is a staged file then highlight the file
+        if index == state.selected_file_index["index"] and state.selected_file_index["type"] == "staged":
+            tile.selected = True
+        else:
+            tile.selected = False
             
         # Add tile to the stage list
         ui.stage_list.controls.append(tile)

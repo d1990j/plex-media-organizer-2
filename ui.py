@@ -173,6 +173,10 @@ class UI:
         print("Source file clicked at index:", e.control.data)
         logic.select_file(e.control.data, self, self.state, "source")
 
+    def on_click_staged_file_tile(self, e: ft.Event[ft.ListTile]):
+        print("Staged file tile clicked at index:", e.control.data)
+        logic.select_file(e.control.data, self, self.state, "staged")
+
     def on_click_commit(self):
         print("commit clicked")
 
