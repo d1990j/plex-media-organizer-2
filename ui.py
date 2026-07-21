@@ -190,20 +190,29 @@ class UI:
 
     def on_click_stage_file(self):
         """Stage selected file for naming."""
+        # Get a ref to the selected index
+        index = self.state.selected_file_index
+
         if self.tv_movie_switch.value: # If True, is Movie, otherwise is TV
             # Stage movie file
-            self.state.media_files[self.state.selected_file_index]["new_name"] = self.title_textfield.value
-            self.state.media_files[self.state.selected_file_index]["year"] = self.year_textfield.value
+            self.state.media_files[index]["new_name"] = self.title_textfield.value
+            self.state.media_files[index]["year"] = self.year_textfield.value
 
             # Set the media type
-            self.state.media_files[self.state.selected_file_index]["type"] = "Movie"
+            self.state.media_files[index]["type"] = "Movie"
 
-            print(f"New movie staged: {self.state.media_files[self.state.selected_file_index]}")
+            # Set the stage value to True
+            self.state.media_files[index]["staged"] = True
+
+            print(f"New movie staged: {self.state.media_files[index]}")
         else:
             print("Stage start for TV file")
 
         # Update the stage list view
         logic.update_staged_files(self, self.state)
+
+        # Update the source list view
+        logic.update_source_file_list(self, self.state)
 
     ####################### General Functions ################################
 

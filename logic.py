@@ -52,14 +52,17 @@ def load_media_files(ui: ui.UI, state: state.AppState):
     """Attempt to load the media files from directory"""
     # If a directory is chosen
     if state.source_directory_path != "No path selected":
-        # Reset media files
+        # Reset media files and staged files
         state.media_files.clear()
+        state.staged_list.clear()
         ui.file_list.controls.clear()
+        ui.stage_list.controls.clear()
+
 
         # Find each file in the chosen directory that has the correct filetype and add to media files 
         for file in os.listdir(state.source_directory_path):
                 if file.lower().endswith((".mp4", ".mkv", ".avi", ".mov", ".mp3", ".flac")):
-                    state.media_files.append({"name": file, "type": "", "new_name": "", "year": "", "season": "", "episode": ""})
+                    state.media_files.append({"name": file, "type": "", "new_name": "", "year": "", "season": "", "episode": "", "staged": False})
 
         # Cycle through each item in the files and add the name to the list
         for index, item in enumerate(state.media_files):
@@ -75,27 +78,29 @@ def load_media_files(ui: ui.UI, state: state.AppState):
                 tile.selected = False
             ui.file_list.controls.append(tile)
             
-            #Update the file list
-            ui.file_list.update()
+        #Update the file list and stage list
+        ui.file_list.update()
+        ui.stage_list.update()
 
 def update_source_file_list(ui: ui.UI, state: state.AppState):
     """Update the source file list without loading the files from disk again."""
      # clear the listview
     ui.file_list.controls.clear()
 
-    #cycle through files in media files and add to list
+    #cycle through files in media files and add to list, only add files that have not been staged
     for index, item in enumerate(state.media_files):
-        tile = ft.ListTile(
-                title=ft.Text(item["name"]),
-                on_click=ui.on_click_source_file_tile,
-                data=index,
-                selected_color=ft.Colors.BLUE_500
-        )
-        if index == state.selected_file_index:
-            tile.selected = True
-        else:
-            tile.selected = False
-        ui.file_list.controls.append(tile)
+        if item["staged"] != True:
+            tile = ft.ListTile(
+                    title=ft.Text(item["name"]),
+                    on_click=ui.on_click_source_file_tile,
+                    data=index,
+                    selected_color=ft.Colors.BLUE_500
+            )
+            if index == state.selected_file_index:
+                tile.selected = True
+            else:
+                tile.selected = False
+            ui.file_list.controls.append(tile)
 
     # update the list
     ui.file_list.update()
@@ -106,9 +111,9 @@ def update_staged_files(ui: ui.UI, state: state.AppState):
     state.staged_list.clear()
     ui.stage_list.controls.clear()
 
-    # Fill list with files that have a value for type
+    # Fill list with files that have been staged
     for file in state.media_files:
-        if file["type"] != "":
+        if file["staged"]:
             state.staged_list.append(file)
 
     # Fill listview with items in stage list
