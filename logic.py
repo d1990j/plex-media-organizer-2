@@ -15,7 +15,7 @@ async def browse_source_directory(ui: ui.UI, state: state.AppState):
     ui.source_directory_path.update()
     load_media_files(ui, state)
     # toggle the commit button if a directory is chosen for source and destination
-    toggle_commit_button()
+    toggle_commit_button(ui, state)
 
 async def browse_destination_directory(ui: ui.UI, state: state.AppState):
     """Open a dialog to select a directory"""
@@ -26,7 +26,7 @@ async def browse_destination_directory(ui: ui.UI, state: state.AppState):
     ui.destination_directory_path.value = state.destination_directory_path
     ui.destination_directory_path.update()
     # toggle the commit button if a directory is chosen for source and destination
-    toggle_commit_button()
+    toggle_commit_button(ui, state)
 
 def select_file(index: int, ui: ui.UI, state: state.AppState, list_type: str):
         """Sets the selected file index, updates the source file list, populates the selected file fields."""
@@ -47,8 +47,14 @@ def select_file(index: int, ui: ui.UI, state: state.AppState, list_type: str):
             state.media_files[index]["episode"]
         )
 
-def toggle_commit_button():
-        print("Commit button pressed")
+def toggle_commit_button(ui: ui.UI, state: state.AppState):
+        """Enable/Disable the commit button based on if there are files ready to be commited, there is a source and a destination directory."""
+        if state.source_directory_path != "" and state.destination_directory_path != "" and len(state.staged_list) > 0:
+            ui.commit_button.disabled = False
+        else:
+            ui.commit_button.disabled = True
+
+        ui.commit_button.update()
 
 def load_media_files(ui: ui.UI, state: state.AppState):
     """Attempt to load the media files from directory"""
