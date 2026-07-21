@@ -29,11 +29,12 @@ async def browse_destination_directory(ui: ui.UI, state: state.AppState):
     toggle_commit_button()
 
 def select_source_file(index: int, ui: ui.UI, state: state.AppState):
+        """Sets the selected file index, updates the source file list, populates the selected file fields."""
         # update the selected file index
         state.selected_file_index = index
 
         # reload the files to update highlights
-        load_media_files(ui, state)
+        update_source_file_list(ui, state)
 
         # Fill the text fields in selected file info
         ui.fill_selected_file_fields(
@@ -77,7 +78,30 @@ def load_media_files(ui: ui.UI, state: state.AppState):
             #Update the file list
             ui.file_list.update()
 
+def update_source_file_list(ui: ui.UI, state: state.AppState):
+    """Update the source file list without loading the files from disk again."""
+     # clear the listview
+    ui.file_list.controls.clear()
+
+    #cycle through files in media files and add to list
+    for index, item in enumerate(state.media_files):
+        tile = ft.ListTile(
+                title=ft.Text(item["name"]),
+                on_click=ui.on_click_source_file_tile,
+                data=index,
+                selected_color=ft.Colors.BLUE_500
+        )
+        if index == state.selected_file_index:
+            tile.selected = True
+        else:
+            tile.selected = False
+        ui.file_list.controls.append(tile)
+
+    # update the list
+    ui.file_list.update()
+
 def update_staged_files(ui: ui.UI, state: state.AppState):
+    """Update the staged file list and listview UI element."""
     # Clear the list and the listview
     state.staged_list.clear()
     ui.stage_list.controls.clear()
