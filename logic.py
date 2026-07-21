@@ -28,10 +28,11 @@ async def browse_destination_directory(ui: ui.UI, state: state.AppState):
     # toggle the commit button if a directory is chosen for source and destination
     toggle_commit_button()
 
-def select_source_file(index: int, ui: ui.UI, state: state.AppState):
+def select_file(index: int, ui: ui.UI, state: state.AppState, list: str):
         """Sets the selected file index, updates the source file list, populates the selected file fields."""
         # update the selected file index
-        state.selected_file_index = index
+        state.selected_file_index["index"] = index
+        state.selected_file_index["type"] = "source"
 
         # reload the files to update highlights
         update_source_file_list(ui, state)
@@ -64,26 +65,14 @@ def load_media_files(ui: ui.UI, state: state.AppState):
                 if file.lower().endswith((".mp4", ".mkv", ".avi", ".mov", ".mp3", ".flac")):
                     state.media_files.append({"name": file, "type": "", "new_name": "", "year": "", "season": "", "episode": "", "staged": False})
 
-        # Cycle through each item in the files and add the name to the list
-        for index, item in enumerate(state.media_files):
-            tile = ft.ListTile(
-                    title=ft.Text(item["name"]),
-                    on_click=ui.on_click_source_file_tile,
-                    data=index,
-                    selected_color=ft.Colors.BLUE_500
-            )
-            if index == state.selected_file_index:
-                tile.selected = True
-            else:
-                tile.selected = False
-            ui.file_list.controls.append(tile)
+        # Update the source file list
+        update_source_file_list(ui, state)
             
-        #Update the file list and stage list
-        ui.file_list.update()
-        ui.stage_list.update()
+        # Update the staged file list
+        update_staged_files(ui, state)
 
 def update_source_file_list(ui: ui.UI, state: state.AppState):
-    """Update the source file list without loading the files from disk again."""
+    """Update the source file list without loading the files from disk again and updates the file list ui element."""
      # clear the listview
     ui.file_list.controls.clear()
 
@@ -96,7 +85,7 @@ def update_source_file_list(ui: ui.UI, state: state.AppState):
                     data=index,
                     selected_color=ft.Colors.BLUE_500
             )
-            if index == state.selected_file_index:
+            if index == state.selected_file_index["index"] and state.selected_file_index["type"] == "source":
                 tile.selected = True
             else:
                 tile.selected = False
@@ -135,8 +124,13 @@ def update_staged_files(ui: ui.UI, state: state.AppState):
 def play_media_file(state: state.AppState):
         """Attempt to play the media file"""
         try:
-            index = state.selected_file_index
-            file = state.media_files[index]["name"]
+            if state.selected_file_index["type"] == "source":
+                index = state.selected_file_index["index"]
+                file = state.media_files[index]["name"]
+            else:
+                 index = state.selected_file_index["index"]
+                 file = state.staged_list[index]["name"]
+            
             filepath = os.path.join(state.source_directory_path, file)
             print(f"Filepath created: {filepath}")
             # Determine OS, nt for windows, posix for mac/linux

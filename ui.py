@@ -171,7 +171,7 @@ class UI:
 
     def on_click_source_file_tile(self, e: ft.Event[ft.ListTile]):
         print("Source file clicked at index:", e.control.data)
-        logic.select_source_file(e.control.data, self, self.state)
+        logic.select_file(e.control.data, self, self.state, "source")
 
     def on_click_commit(self):
         print("commit clicked")
@@ -191,7 +191,7 @@ class UI:
     def on_click_stage_file(self):
         """Stage selected file for naming."""
         # Get a ref to the selected index
-        index = self.state.selected_file_index
+        index = self.state.selected_file_index["index"]
 
         if self.tv_movie_switch.value: # If True, is Movie, otherwise is TV
             # Stage movie file
