@@ -47,6 +47,15 @@ def select_file(index: int, ui: ui.UI, state: state.AppState, list_type: str):
             state.media_files[index]["episode"]
         )
 
+        # Toggle the commit button
+        toggle_commit_button(ui, state)
+
+        # Change name of stage file
+        # if list_type == "source":
+        #     ui.stage_button.content = "Stage"
+        # elif list_type == "staged":
+        #     ui.stage_button.content = "Unstage"
+
 def toggle_commit_button(ui: ui.UI, state: state.AppState):
         """Enable/Disable the commit button based on if there are files ready to be commited, there is a source and a destination directory."""
         if state.source_directory_path != "" and state.destination_directory_path != "" and len(state.staged_list) > 0:

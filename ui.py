@@ -39,7 +39,7 @@ class UI:
         )
         self.stage_list = ft.ListView(
             controls=[
-                ft.Text(f"Item {i}") for i in range(1, 100) # For testing
+                #ft.Text(f"Item {i}") for i in range(1, 100) # For testing
             ],
             expand=True
         )
