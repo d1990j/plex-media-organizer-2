@@ -9,3 +9,7 @@ class Keys(Enum):
     INDEX = "index"
     TYPE = "type"
     NEW_NAME = "new_name"
+
+class MediaType(Enum):
+    MOVIE = "movie"
+    TV = "tv"

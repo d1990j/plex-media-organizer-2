@@ -1,7 +1,7 @@
 import flet as ft
 import logic
 import state
-from constants import Keys
+from constants import Keys, MediaType
 
 class UI:
     def __init__(self, page: ft.Page, state: state.AppState):
@@ -47,7 +47,7 @@ class UI:
 
         ######################### Switches ##########################
         self.tv_movie_switch = ft.Switch(
-            label="TV/Movie", 
+            label="TV Show/Movie", 
             value=False,
             on_change=self.on_click_tv_movie_switch
         )
@@ -198,16 +198,20 @@ class UI:
         # Get a ref to the selected index
         index = self.state.selected_file_index[Keys.INDEX]
 
-        if self.tv_movie_switch.value: # If True, is Movie, otherwise is TV
+        # If a staged file is selected, unstage the file and reload.
+        if self.state.media_files[index][Keys.STAGED] == True:
+            self.state.media_files[index][Keys.STAGED] = False
+        # If not a staged file, then stage the file based on if movie or tv.
+        elif self.tv_movie_switch.value: # If True, is Movie, otherwise is TV
             # Stage movie file
             self.state.media_files[index][Keys.NEW_NAME] = self.title_textfield.value
             self.state.media_files[index][Keys.YEAR] = self.year_textfield.value
 
             # Set the media type
-            self.state.media_files[index][Keys.TYPE] = "Movie"
+            self.state.media_files[index][Keys.TYPE] = MediaType.MOVIE
 
             # Set the stage value to True
-            self.state.media_files[index]["staged"] = True
+            self.state.media_files[index][Keys.STAGED] = True
 
             print(f"New movie staged: {self.state.media_files[index]}")
         else:
@@ -218,16 +222,6 @@ class UI:
 
         # Update the source list view
         logic.update_source_file_list(self, self.state)
-
-    ####################### General Functions ################################
-
-    def fill_selected_file_fields(self, title: str, year: str, type: str, season: str, episode: str):
-        self.title_textfield.value = title
-        self.year_textfield.value = year
-        self.tv_movie_switch.value = False if type == "Movie" else True
-        self.season_textfield.value = season
-        self.episode_textfield.value = episode
-        self.selected_info_container.update()
     
     ########################### Add items to page #############################
     def build_page(self):

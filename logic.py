@@ -3,7 +3,7 @@ import state
 import os
 import ui
 import subprocess
-from constants import Keys
+from constants import Keys, MediaType
 
 ##################### LOGIC ############################
 async def browse_source_directory(ui: ui.UI, state: state.AppState):
@@ -40,7 +40,8 @@ def select_file(index: int, ui: ui.UI, state: state.AppState, staged: bool):
         update_staged_files(ui, state)
 
         # Fill the text fields in selected file info
-        ui.fill_selected_file_fields(
+        fill_selected_file_fields(
+            ui,
             state.media_files[index][Keys.NAME] if staged == False else state.media_files[index][Keys.NEW_NAME],
             state.media_files[index][Keys.YEAR],
             state.media_files[index][Keys.TYPE],
@@ -77,7 +78,7 @@ def load_media_files(ui: ui.UI, state: state.AppState):
         # Find each file in the chosen directory that has the correct filetype and add to media files 
         for file in os.listdir(state.source_directory_path):
                 if file.lower().endswith((".mp4", ".mkv", ".avi", ".mov", ".mp3", ".flac")):
-                    state.media_files.append({Keys.NAME: file, Keys.TYPE: "", Keys.NEW_NAME: "", Keys.YEAR: "", Keys.SEASON: "", Keys.EPISODE: "", "staged": False})
+                    state.media_files.append({Keys.NAME: file, Keys.TYPE: "", Keys.NEW_NAME: "", Keys.YEAR: "", Keys.SEASON: "", Keys.EPISODE: "", Keys.STAGED: False})
 
         # Update the source file list
         update_source_file_list(ui, state)
@@ -92,7 +93,7 @@ def update_source_file_list(ui: ui.UI, state: state.AppState):
 
     #cycle through files in media files and add to list, only add files that have not been staged
     for index, item in enumerate(state.media_files):
-        if item["staged"] != True:
+        if item[Keys.STAGED] != True:
             tile = ft.ListTile(
                     title=ft.Text(item[Keys.NAME]),
                     on_click=ui.on_click_source_file_tile,
@@ -116,7 +117,7 @@ def update_staged_files(ui: ui.UI, state: state.AppState):
 
     # Fill list with files that have been staged
     for file in state.media_files:
-        if file["staged"]:
+        if file[Keys.STAGED]:
             state.staged_list.append(file)
 
     # Fill listview with items in stage list
@@ -171,3 +172,12 @@ def update_stage_button(ui: ui.UI, state: state.AppState):
         ui.stage_button.content = "Stage"
 
     ui.stage_button.update()
+
+def fill_selected_file_fields(ui: ui.UI, title: str, year: str, type: MediaType, season: str, episode: str):
+    """Fill the input boxes with information obtained from the selected file."""
+    ui.title_textfield.value = title
+    ui.year_textfield.value = year
+    ui.tv_movie_switch.value = True if type == MediaType.MOVIE else False
+    ui.season_textfield.value = season
+    ui.episode_textfield.value = episode
+    ui.selected_info_container.update()
