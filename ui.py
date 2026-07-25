@@ -217,6 +217,20 @@ class UI:
         else:
             print("Stage start for TV file")
 
+            # Stage TV file
+            self.state.media_files[index][Keys.NEW_NAME] = self.title_textfield.value
+            self.state.media_files[index][Keys.YEAR] = self.year_textfield.value
+            self.state.media_files[index][Keys.SEASON] = self.season_textfield.value
+            self.state.media_files[index][Keys.EPISODE] = self.episode_textfield.value
+
+            # Set the media type
+            self.state.media_files[index][Keys.TYPE] = MediaType.TV
+
+            # Set the stage value to true
+            self.state.media_files[index][Keys.STAGED] = True
+
+            print(f"New TV show staged: {self.state.media_files[index]}")
+
         # Update the stage list view
         logic.update_staged_files(self, self.state)
 
