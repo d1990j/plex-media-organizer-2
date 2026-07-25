@@ -29,11 +29,11 @@ async def browse_destination_directory(ui: ui.UI, state: state.AppState):
     # toggle the commit button if a directory is chosen for source and destination
     toggle_commit_button(ui, state)
 
-def select_file(index: int, ui: ui.UI, state: state.AppState, list_type: str):
+def select_file(index: int, ui: ui.UI, state: state.AppState, staged: bool):
         """Sets the selected file index, updates the source file list, populates the selected file fields."""
         # update the selected file index
-        state.selected_file_index["index"] = index
-        state.selected_file_index["type"] = list_type
+        state.selected_file_index[Keys.INDEX] = index
+        state.selected_file_index[Keys.STAGED] = staged
 
         # reload the files to update highlights
         update_source_file_list(ui, state)
@@ -41,7 +41,7 @@ def select_file(index: int, ui: ui.UI, state: state.AppState, list_type: str):
 
         # Fill the text fields in selected file info
         ui.fill_selected_file_fields(
-            state.media_files[index][Keys.NAME] if list_type == "source" else state.media_files[index]["new_name"],
+            state.media_files[index][Keys.NAME] if staged == False else state.media_files[index]["new_name"],
             state.media_files[index][Keys.YEAR],
             state.media_files[index]["type"],
             state.media_files[index][Keys.SEASON],
@@ -102,7 +102,7 @@ def update_source_file_list(ui: ui.UI, state: state.AppState):
                     data=index,
                     selected_color=ft.Colors.BLUE_500
             )
-            if index == state.selected_file_index["index"] and state.selected_file_index["type"] == "source":
+            if index == state.selected_file_index[Keys.INDEX] and state.selected_file_index[Keys.STAGED] == False:
                 tile.selected = True
             else:
                 tile.selected = False
@@ -132,7 +132,7 @@ def update_staged_files(ui: ui.UI, state: state.AppState):
         )
 
         # If the current selected file is a staged file then highlight the file
-        if index == state.selected_file_index["index"] and state.selected_file_index["type"] == "staged":
+        if index == state.selected_file_index[Keys.INDEX] and state.selected_file_index[Keys.STAGED] == True:
             tile.selected = True
         else:
             tile.selected = False
@@ -147,11 +147,11 @@ def update_staged_files(ui: ui.UI, state: state.AppState):
 def play_media_file(state: state.AppState):
         """Attempt to play the media file"""
         try:
-            if state.selected_file_index["type"] == "source":
-                index = state.selected_file_index["index"]
+            if state.selected_file_index[Keys.STAGED] == False:
+                index = state.selected_file_index[Keys.INDEX]
                 file = state.media_files[index][Keys.NAME]
             else:
-                 index = state.selected_file_index["index"]
+                 index = state.selected_file_index[Keys.INDEX]
                  file = state.staged_list[index][Keys.NAME]
             
             filepath = os.path.join(state.source_directory_path, file)

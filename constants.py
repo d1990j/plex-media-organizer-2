@@ -5,3 +5,6 @@ class Keys(Enum):
     YEAR = "year"
     SEASON = "season"
     EPISODE = "episode"
+    STAGED = "staged"
+    INDEX = "index"
+    TYPE = "type"
