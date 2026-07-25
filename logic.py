@@ -3,6 +3,7 @@ import state
 import os
 import ui
 import subprocess
+from constants import Keys
 
 ##################### LOGIC ############################
 async def browse_source_directory(ui: ui.UI, state: state.AppState):
@@ -40,11 +41,11 @@ def select_file(index: int, ui: ui.UI, state: state.AppState, list_type: str):
 
         # Fill the text fields in selected file info
         ui.fill_selected_file_fields(
-            state.media_files[index]["name"] if list_type == "source" else state.media_files[index]["new_name"],
-            state.media_files[index]["year"],
+            state.media_files[index][Keys.NAME] if list_type == "source" else state.media_files[index]["new_name"],
+            state.media_files[index][Keys.YEAR],
             state.media_files[index]["type"],
-            state.media_files[index]["season"],
-            state.media_files[index]["episode"]
+            state.media_files[index][Keys.SEASON],
+            state.media_files[index][Keys.EPISODE]
         )
 
         # Toggle the commit button
@@ -79,7 +80,7 @@ def load_media_files(ui: ui.UI, state: state.AppState):
         # Find each file in the chosen directory that has the correct filetype and add to media files 
         for file in os.listdir(state.source_directory_path):
                 if file.lower().endswith((".mp4", ".mkv", ".avi", ".mov", ".mp3", ".flac")):
-                    state.media_files.append({"name": file, "type": "", "new_name": "", "year": "", "season": "", "episode": "", "staged": False})
+                    state.media_files.append({Keys.NAME: file, "type": "", "new_name": "", Keys.YEAR: "", Keys.SEASON: "", Keys.EPISODE: "", "staged": False})
 
         # Update the source file list
         update_source_file_list(ui, state)
@@ -96,7 +97,7 @@ def update_source_file_list(ui: ui.UI, state: state.AppState):
     for index, item in enumerate(state.media_files):
         if item["staged"] != True:
             tile = ft.ListTile(
-                    title=ft.Text(item["name"]),
+                    title=ft.Text(item[Keys.NAME]),
                     on_click=ui.on_click_source_file_tile,
                     data=index,
                     selected_color=ft.Colors.BLUE_500
@@ -148,10 +149,10 @@ def play_media_file(state: state.AppState):
         try:
             if state.selected_file_index["type"] == "source":
                 index = state.selected_file_index["index"]
-                file = state.media_files[index]["name"]
+                file = state.media_files[index][Keys.NAME]
             else:
                  index = state.selected_file_index["index"]
-                 file = state.staged_list[index]["name"]
+                 file = state.staged_list[index][Keys.NAME]
             
             filepath = os.path.join(state.source_directory_path, file)
             print(f"Filepath created: {filepath}")

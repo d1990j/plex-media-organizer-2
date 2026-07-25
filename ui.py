@@ -1,6 +1,7 @@
 import flet as ft
 import logic
 import state
+from constants import Keys
 
 class UI:
     def __init__(self, page: ft.Page, state: state.AppState):
@@ -200,7 +201,7 @@ class UI:
         if self.tv_movie_switch.value: # If True, is Movie, otherwise is TV
             # Stage movie file
             self.state.media_files[index]["new_name"] = self.title_textfield.value
-            self.state.media_files[index]["year"] = self.year_textfield.value
+            self.state.media_files[index][Keys.YEAR] = self.year_textfield.value
 
             # Set the media type
             self.state.media_files[index]["type"] = "Movie"
