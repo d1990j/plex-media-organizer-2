@@ -8,3 +8,4 @@ class Keys(Enum):
     STAGED = "staged"
     INDEX = "index"
     TYPE = "type"
+    NEW_NAME = "new_name"

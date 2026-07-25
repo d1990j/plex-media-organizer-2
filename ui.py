@@ -200,11 +200,11 @@ class UI:
 
         if self.tv_movie_switch.value: # If True, is Movie, otherwise is TV
             # Stage movie file
-            self.state.media_files[index]["new_name"] = self.title_textfield.value
+            self.state.media_files[index][Keys.NEW_NAME] = self.title_textfield.value
             self.state.media_files[index][Keys.YEAR] = self.year_textfield.value
 
             # Set the media type
-            self.state.media_files[index]["type"] = "Movie"
+            self.state.media_files[index][Keys.TYPE] = "Movie"
 
             # Set the stage value to True
             self.state.media_files[index]["staged"] = True

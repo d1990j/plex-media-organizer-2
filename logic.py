@@ -41,9 +41,9 @@ def select_file(index: int, ui: ui.UI, state: state.AppState, staged: bool):
 
         # Fill the text fields in selected file info
         ui.fill_selected_file_fields(
-            state.media_files[index][Keys.NAME] if staged == False else state.media_files[index]["new_name"],
+            state.media_files[index][Keys.NAME] if staged == False else state.media_files[index][Keys.NEW_NAME],
             state.media_files[index][Keys.YEAR],
-            state.media_files[index]["type"],
+            state.media_files[index][Keys.TYPE],
             state.media_files[index][Keys.SEASON],
             state.media_files[index][Keys.EPISODE]
         )
@@ -52,10 +52,7 @@ def select_file(index: int, ui: ui.UI, state: state.AppState, staged: bool):
         toggle_commit_button(ui, state)
 
         # Change name of stage file
-        # if list_type == "source":
-        #     ui.stage_button.content = "Stage"
-        # elif list_type == "staged":
-        #     ui.stage_button.content = "Unstage"
+        update_stage_button(ui, state)
 
 def toggle_commit_button(ui: ui.UI, state: state.AppState):
         """Enable/Disable the commit button based on if there are files ready to be commited, there is a source and a destination directory."""
@@ -80,7 +77,7 @@ def load_media_files(ui: ui.UI, state: state.AppState):
         # Find each file in the chosen directory that has the correct filetype and add to media files 
         for file in os.listdir(state.source_directory_path):
                 if file.lower().endswith((".mp4", ".mkv", ".avi", ".mov", ".mp3", ".flac")):
-                    state.media_files.append({Keys.NAME: file, "type": "", "new_name": "", Keys.YEAR: "", Keys.SEASON: "", Keys.EPISODE: "", "staged": False})
+                    state.media_files.append({Keys.NAME: file, Keys.TYPE: "", Keys.NEW_NAME: "", Keys.YEAR: "", Keys.SEASON: "", Keys.EPISODE: "", "staged": False})
 
         # Update the source file list
         update_source_file_list(ui, state)
@@ -125,7 +122,7 @@ def update_staged_files(ui: ui.UI, state: state.AppState):
     # Fill listview with items in stage list
     for index, item in enumerate(state.staged_list):
         tile = ft.ListTile(
-            title=ft.Text(item["new_name"]),
+            title=ft.Text(item[Keys.NEW_NAME]),
             on_click=ui.on_click_staged_file_tile,
             data=index,
             selected_color=ft.Colors.BLUE_500
@@ -165,3 +162,12 @@ def play_media_file(state: state.AppState):
                 subprocess.run(["open", filepath])
         except:
             print("Unable to play media")
+
+def update_stage_button(ui: ui.UI, state: state.AppState):
+    """Toggle stage button to say Stage/Unstage based on the selected file."""
+    if state.selected_file_index[Keys.STAGED]:
+        ui.stage_button.content = "Unstage"
+    else:
+        ui.stage_button.content = "Stage"
+
+    ui.stage_button.update()
