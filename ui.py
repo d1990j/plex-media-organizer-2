@@ -214,6 +214,9 @@ class UI:
             # Set the stage value to True
             self.state.media_files[index][Keys.STAGED] = True
 
+            # Set value for last staged file is tv to false
+            self.state.last_staged_was_tv = False
+
             print(f"New movie staged: {self.state.media_files[index]}")
         else:
             print("Stage start for TV file")
@@ -229,6 +232,9 @@ class UI:
 
             # Set the stage value to true
             self.state.media_files[index][Keys.STAGED] = True
+
+            # Set value for last staged file is tv to true
+            self.state.last_staged_was_tv = True
 
             print(f"New TV show staged: {self.state.media_files[index]}")
 

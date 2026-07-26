@@ -47,7 +47,8 @@ def select_file(index: int, ui: ui.UI, state: state.AppState, staged: bool):
             state.media_files[index][Keys.YEAR],
             state.media_files[index][Keys.TYPE],
             state.media_files[index][Keys.SEASON],
-            state.media_files[index][Keys.EPISODE]
+            state.media_files[index][Keys.EPISODE],
+            state
         )
 
         # Toggle the commit button
@@ -176,14 +177,18 @@ def update_stage_button(ui: ui.UI, state: state.AppState):
 
     ui.stage_button.update()
 
-def fill_selected_file_fields(ui: ui.UI, title: str, year: str, type: MediaType, season: str, episode: str):
+def fill_selected_file_fields(ui: ui.UI, title: str, year: str, type: MediaType, season: str, episode: str, state: state.AppState):
     """Fill the input boxes with information obtained from the selected file."""
-    ui.title_textfield.value = title
-    ui.year_textfield.value = year
-    ui.tv_movie_switch.value = True if type == MediaType.MOVIE else False
-    ui.season_textfield.value = season
-    ui.episode_textfield.value = episode
-    ui.selected_info_container.update()
+    if state.last_staged_was_tv:
+        ui.episode_textfield.value = ""
+        ui.selected_info_container.update()
+    else:
+        ui.title_textfield.value = title
+        ui.year_textfield.value = year
+        ui.tv_movie_switch.value = True if type == MediaType.MOVIE else False
+        ui.season_textfield.value = season
+        ui.episode_textfield.value = episode
+        ui.selected_info_container.update()
 
 def organize_files(state: state.AppState, ui: ui.UI):
      # Make sure there is a source and destination directory

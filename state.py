@@ -9,3 +9,4 @@ class AppState:
         self.staged_list = []
         self.source_directory_path = ""
         self.destination_directory_path = ""
+        self.last_staged_was_tv = False
