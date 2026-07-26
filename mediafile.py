@@ -1,7 +1,7 @@
 from constants import MediaType
 
 class MediaFile:
-    def __init__(self, file_name: str, new_name: str | None = None, year: str | None = None, season: str | None = None, episode: str | None = None, type: MediaType | None = None):
+    def __init__(self, file_name: str, new_name: str | None = None, year: str | None = None, season: str | None = None, episode: str | None = None, type: MediaType = MediaType.MOVIE):
         self.new_name = new_name
         self.year = year
         self.season = season

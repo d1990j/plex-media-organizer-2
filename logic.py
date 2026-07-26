@@ -5,6 +5,7 @@ import ui
 import subprocess
 from constants import Keys, MediaType
 import shutil
+from mediafile import MediaFile
 
 ##################### LOGIC ############################
 async def browse_source_directory(ui: ui.UI, state: state.AppState):
@@ -43,11 +44,11 @@ def select_file(index: int, ui: ui.UI, state: state.AppState, staged: bool):
         # Fill the text fields in selected file info
         fill_selected_file_fields(
             ui,
-            state.media_files[index][Keys.NAME] if staged == False else state.media_files[index][Keys.NEW_NAME],
-            state.media_files[index][Keys.YEAR],
-            state.media_files[index][Keys.TYPE],
-            state.media_files[index][Keys.SEASON],
-            state.media_files[index][Keys.EPISODE],
+            state.media_files[index].file_name if staged == False else state.media_files[index].new_name or "",
+            state.media_files[index].year or "",
+            state.media_files[index].type or MediaType.MOVIE,
+            state.media_files[index].season or "",
+            state.media_files[index].episode or "",
             state
         )
 
@@ -80,7 +81,8 @@ def load_media_files(ui: ui.UI, state: state.AppState):
         # Find each file in the chosen directory that has the correct filetype and add to media files 
         for file in os.listdir(state.source_directory_path):
                 if file.lower().endswith((".mp4", ".mkv", ".avi", ".mov", ".mp3", ".flac")) and not file.startswith('.'):
-                    state.media_files.append({Keys.NAME: file, Keys.TYPE: "", Keys.NEW_NAME: "", Keys.YEAR: "", Keys.SEASON: "", Keys.EPISODE: "", Keys.STAGED: False})
+                    mediafile = MediaFile(file)
+                    state.media_files.append(mediafile)
 
         # Update the source file list
         update_source_file_list(ui, state)
@@ -95,9 +97,9 @@ def update_source_file_list(ui: ui.UI, state: state.AppState):
 
     #cycle through files in media files and add to list, only add files that have not been staged
     for index, item in enumerate(state.media_files):
-        if item[Keys.STAGED] != True:
+        if item.staged != True:
             tile = ft.ListTile(
-                    title=ft.Text(item[Keys.NAME]),
+                    title=ft.Text(item.file_name),
                     on_click=ui.on_click_source_file_tile,
                     data=index,
                     selected_color=ft.Colors.BLUE_500
@@ -119,13 +121,16 @@ def update_staged_files(ui: ui.UI, state: state.AppState):
 
     # Fill list with files that have been staged
     for file in state.media_files:
-        if file[Keys.STAGED]:
+        if file.staged:
             state.staged_list.append(file)
 
     # Fill listview with items in stage list
     for index, item in enumerate(state.staged_list):
         # Construct a readable name to put in list. If TV include season and episode, if Movie, just the name
-        new_name = f"[{item[Keys.TYPE].value}] {item[Keys.NEW_NAME]} S{item[Keys.SEASON]} E{item[Keys.EPISODE]}" if item[Keys.TYPE] == MediaType.TV else f"[{item[Keys.TYPE].value}] {item[Keys.NEW_NAME]}"
+        new_name = item.new_name or ""
+        season = item.season or ""
+        episode = item.episode or ""
+        new_name = f"[{item.type.value}] {new_name} S{season} E{episode}" if item.type == MediaType.TV else f"[{item.type.value}] {new_name}"
         tile = ft.ListTile(
             title=ft.Text(new_name),
             on_click=ui.on_click_staged_file_tile,
@@ -151,10 +156,10 @@ def play_media_file(state: state.AppState):
         try:
             if state.selected_file_index[Keys.STAGED] == False:
                 index = state.selected_file_index[Keys.INDEX]
-                file = state.media_files[index][Keys.NAME]
+                file = state.media_files[index].file_name
             else:
                  index = state.selected_file_index[Keys.INDEX]
-                 file = state.staged_list[index][Keys.NAME]
+                 file = state.staged_list[index].file_name
             
             filepath = os.path.join(state.source_directory_path, file)
             print(f"Filepath created: {filepath}")
@@ -204,13 +209,13 @@ def organize_files(state: state.AppState, ui: ui.UI):
     # >> Reload the files
 
     for m in state.media_files:
-        if m[Keys.TYPE] == MediaType.MOVIE:
+        if m.type == MediaType.MOVIE and m.staged:
             file = m
-            title = file[Keys.NEW_NAME]
-            year = file[Keys.YEAR]
+            title = file.new_name or file.file_name
+            year = file.year or ""
 
             # Record the old path to the file
-            old_path = os.path.join(state.source_directory_path, file[Keys.NAME])
+            old_path = os.path.join(state.source_directory_path, file.file_name)
 
             # Create the new folder structure and make the directory
             folder_name = f"{title} ({year})" if year else title
@@ -218,26 +223,26 @@ def organize_files(state: state.AppState, ui: ui.UI):
             os.makedirs(dest_dir, exist_ok=True)
 
             # Move the file
-            ext = os.path.splitext(file["name"])[1]
+            ext = os.path.splitext(file.file_name)[1]
             new_path = os.path.join(dest_dir, f"{folder_name}{ext}")
             shutil.move(old_path, new_path)
 
-        elif m[Keys.TYPE] == MediaType.TV:
+        elif m.type == MediaType.TV and m.staged:
             file = m
-            title = file[Keys.NEW_NAME]
-            year = file[Keys.YEAR]
-            season = file[Keys.SEASON]
-            episode = file[Keys.EPISODE]
+            title = file.new_name or file.file_name
+            year = file.year or ""
+            season = file.season or ""
+            episode = file.episode or ""
 
             # Record the old path to the file
-            old_path = os.path.join(state.source_directory_path, file[Keys.NAME])
+            old_path = os.path.join(state.source_directory_path, file.file_name)
 
             # Create the new folder structure and make the directory
             dest_dir = os.path.join(state.destination_directory_path, f"{title} ({year})", f"Season {season.zfill(2)}")
             os.makedirs(dest_dir, exist_ok=True)
 
             # Move the file
-            ext = os.path.splitext(file[Keys.NAME])[1]
+            ext = os.path.splitext(file.file_name)[1]
             new_name = f"{title} ({year}) - S{season.zfill(2)}E{episode.zfill(2)}{ext}"
             new_path = os.path.join(dest_dir, new_name)
             shutil.move(old_path, new_path)

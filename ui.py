@@ -200,19 +200,19 @@ class UI:
         index = self.state.selected_file_index[Keys.INDEX]
 
         # If a staged file is selected, unstage the file and reload.
-        if self.state.media_files[index][Keys.STAGED] == True:
-            self.state.media_files[index][Keys.STAGED] = False
+        if self.state.media_files[index].staged == True:
+            self.state.media_files[index].staged = False
         # If not a staged file, then stage the file based on if movie or tv.
         elif self.tv_movie_switch.value: # If True, is Movie, otherwise is TV
             # Stage movie file
-            self.state.media_files[index][Keys.NEW_NAME] = self.title_textfield.value
-            self.state.media_files[index][Keys.YEAR] = self.year_textfield.value
+            self.state.media_files[index].new_name = self.title_textfield.value
+            self.state.media_files[index].year = self.year_textfield.value
 
             # Set the media type
-            self.state.media_files[index][Keys.TYPE] = MediaType.MOVIE
+            self.state.media_files[index].type = MediaType.MOVIE
 
             # Set the stage value to True
-            self.state.media_files[index][Keys.STAGED] = True
+            self.state.media_files[index].staged = True
 
             # Set value for last staged file is tv to false
             self.state.last_staged_was_tv = False
@@ -222,16 +222,16 @@ class UI:
             print("Stage start for TV file")
 
             # Stage TV file
-            self.state.media_files[index][Keys.NEW_NAME] = self.title_textfield.value
-            self.state.media_files[index][Keys.YEAR] = self.year_textfield.value
-            self.state.media_files[index][Keys.SEASON] = self.season_textfield.value
-            self.state.media_files[index][Keys.EPISODE] = self.episode_textfield.value
+            self.state.media_files[index].new_name = self.title_textfield.value
+            self.state.media_files[index].year = self.year_textfield.value
+            self.state.media_files[index].season = self.season_textfield.value
+            self.state.media_files[index].episode = self.episode_textfield.value
 
             # Set the media type
-            self.state.media_files[index][Keys.TYPE] = MediaType.TV
+            self.state.media_files[index].type = MediaType.TV
 
             # Set the stage value to true
-            self.state.media_files[index][Keys.STAGED] = True
+            self.state.media_files[index].staged = True
 
             # Set value for last staged file is tv to true
             self.state.last_staged_was_tv = True
