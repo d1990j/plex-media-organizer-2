@@ -123,8 +123,10 @@ def update_staged_files(ui: ui.UI, state: state.AppState):
 
     # Fill listview with items in stage list
     for index, item in enumerate(state.staged_list):
+        # Construct a readable name to put in list. If TV include season and episode, if Movie, just the name
+        new_name = f"[{item[Keys.TYPE].value}] {item[Keys.NEW_NAME]} S{item[Keys.SEASON]} E{item[Keys.EPISODE]}" if item[Keys.TYPE] == MediaType.TV else f"[{item[Keys.TYPE].value}] {item[Keys.NEW_NAME]}"
         tile = ft.ListTile(
-            title=ft.Text(item[Keys.NEW_NAME]),
+            title=ft.Text(new_name),
             on_click=ui.on_click_staged_file_tile,
             data=index,
             selected_color=ft.Colors.BLUE_500
