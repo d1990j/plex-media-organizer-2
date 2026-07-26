@@ -2,3 +2,4 @@
 >> Adjust starting program dimensions
 >> Allow for setting default filepaths
 >> Move logic for staging to logic.py rather than in the ui.py
+>> Create a mediafile class that allows creation of mediafile objects, movie or tv, that can replace the dicts currently used
