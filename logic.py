@@ -4,6 +4,7 @@ import os
 import ui
 import subprocess
 from constants import Keys, MediaType
+import shutil
 
 ##################### LOGIC ############################
 async def browse_source_directory(ui: ui.UI, state: state.AppState):
@@ -181,3 +182,64 @@ def fill_selected_file_fields(ui: ui.UI, title: str, year: str, type: MediaType,
     ui.season_textfield.value = season
     ui.episode_textfield.value = episode
     ui.selected_info_container.update()
+
+def organize_files(state: state.AppState, ui: ui.UI):
+     # Make sure there is a source and destination directory
+    if not state.source_directory_path and not state.destination_directory_path:
+        print("WARNING: No source and/or destination path selected")
+        return
+
+    # For each media file
+    # >> If has media type selected
+    # >> If "Movie" organize as needed
+    # >> If "TV" organize as needed
+    # >> Provide message of completion
+    # >> Reload the files
+
+    for m in state.media_files:
+        if m[Keys.TYPE] == MediaType.MOVIE:
+            file = m
+            title = file[Keys.NEW_NAME]
+            year = file[Keys.YEAR]
+
+            # Record the old path to the file
+            old_path = os.path.join(state.source_directory_path, file[Keys.NAME])
+
+            # Create the new folder structure and make the directory
+            folder_name = f"{title} ({year})" if year else title
+            dest_dir = os.path.join(state.destination_directory_path, folder_name)
+            os.makedirs(dest_dir, exist_ok=True)
+
+            # Move the file
+            ext = os.path.splitext(file["name"])[1]
+            new_path = os.path.join(dest_dir, f"{folder_name}{ext}")
+            shutil.move(old_path, new_path)
+
+        elif m[Keys.TYPE] == MediaType.TV:
+            file = m
+            title = file[Keys.NEW_NAME]
+            year = file[Keys.YEAR]
+            season = file[Keys.SEASON]
+            episode = file[Keys.EPISODE]
+
+            # Record the old path to the file
+            old_path = os.path.join(state.source_directory_path, file[Keys.NAME])
+
+            # Create the new folder structure and make the directory
+            dest_dir = os.path.join(state.destination_directory_path, f"{title} ({year})", f"Season {season.zfill(2)}")
+            os.makedirs(dest_dir, exist_ok=True)
+
+            # Move the file
+            ext = os.path.splitext(file[Keys.NAME])[1]
+            new_name = f"{title} ({year}) - S{season.zfill(2)}E{episode.zfill(2)}{ext}"
+            new_path = os.path.join(dest_dir, new_name)
+            shutil.move(old_path, new_path)
+
+        else:
+            pass
+
+    # Display completion message
+    print("Done - Files have been organized into their folders.")
+
+    # Reload the files
+    load_media_files(ui, state)

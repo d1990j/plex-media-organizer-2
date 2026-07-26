@@ -180,6 +180,7 @@ class UI:
 
     def on_click_commit(self):
         print("commit clicked")
+        logic.organize_files(self.state, self)
 
     def on_click_play(self):
         print("play button clicked")
