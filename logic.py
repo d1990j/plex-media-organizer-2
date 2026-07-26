@@ -78,7 +78,7 @@ def load_media_files(ui: ui.UI, state: state.AppState):
 
         # Find each file in the chosen directory that has the correct filetype and add to media files 
         for file in os.listdir(state.source_directory_path):
-                if file.lower().endswith((".mp4", ".mkv", ".avi", ".mov", ".mp3", ".flac")):
+                if file.lower().endswith((".mp4", ".mkv", ".avi", ".mov", ".mp3", ".flac")) and not file.startswith('.'):
                     state.media_files.append({Keys.NAME: file, Keys.TYPE: "", Keys.NEW_NAME: "", Keys.YEAR: "", Keys.SEASON: "", Keys.EPISODE: "", Keys.STAGED: False})
 
         # Update the source file list
