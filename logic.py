@@ -226,6 +226,11 @@ def organize_files(state: state.AppState, ui: ui.UI):
             # Move the file
             ext = os.path.splitext(file.file_name)[1]
             new_path = os.path.join(dest_dir, f"{folder_name}{ext}")
+
+            # Check if path exists
+            if os.path.exists(new_path):
+                raise FileExistsError(f"Error: the file '{new_path}' already exists.")
+            
             shutil.move(old_path, new_path)
 
         elif m.type == MediaType.TV and m.staged:
@@ -246,6 +251,11 @@ def organize_files(state: state.AppState, ui: ui.UI):
             ext = os.path.splitext(file.file_name)[1]
             new_name = f"{title} ({year}) - S{season.zfill(2)}E{episode.zfill(2)}{ext}"
             new_path = os.path.join(dest_dir, new_name)
+
+            # Check if path exists
+            if os.path.exists(new_path):
+                raise FileExistsError(f"Error: the file '{new_path}' already exists.")
+
             shutil.move(old_path, new_path)
 
         else:

@@ -1,6 +1,9 @@
->> Make sure files cannot be overwritten
+
 >> Adjust starting program dimensions
 >> Allow for setting default filepaths
+
+IN PROCESS
+>> Make sure files cannot be overwritten
 
 DONE
 >> Create a mediafile class that allows creation of mediafile objects, movie or tv, that can replace the dicts currently used
