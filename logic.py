@@ -6,6 +6,7 @@ import subprocess
 from constants import Keys, MediaType
 import shutil
 from mediafile import MediaFile
+from enum import Enum
 
 ##################### LOGIC ############################
 async def browse_source_directory(ui: ui.UI, state: state.AppState):
@@ -255,3 +256,50 @@ def organize_files(state: state.AppState, ui: ui.UI):
 
     # Reload the files
     load_media_files(ui, state)
+
+def stage_file(state: state.AppState, ui: ui.UI):
+    # Get a ref to the selected index
+    index = state.selected_file_index[Keys.INDEX]
+
+    # If a staged file is selected, unstage the file and reload
+    if state.media_files[index].staged:
+        state.media_files[index].staged = False
+    # If not a staged file, then stage the file based on if movie or tv
+    elif ui.tv_movie_switch.value: # If True, is Movie, otherwise is TV
+        # Stage movie file
+        state.media_files[index].new_name = ui.title_textfield.value
+        state.media_files[index].year = ui.year_textfield.value
+
+        # Set the media type
+        state.media_files[index].type = MediaType.MOVIE
+
+        # Set the stage value to True
+        state.media_files[index].staged = True
+
+        # Set value for last staged file is TV to False
+        state.last_staged_was_tv = False
+
+        print(f"New movie staged: {state.media_files[index]}")
+    else:
+        # Stage TV file
+        state.media_files[index].new_name = ui.title_textfield.value
+        state.media_files[index].year = ui.year_textfield.value
+        state.media_files[index].season = ui.season_textfield.value
+        state.media_files[index].episode = ui.season_textfield.value
+
+        # Set the media type
+        state.media_files[index].type = MediaType.TV
+
+        # Set the stage value to true
+        state.media_files[index].staged = True
+
+        # Set value for last staged file is tv to true
+        state.last_staged_was_tv = True
+
+        print(f"New TV show staged: {state.media_files[index]}")
+
+    # Update the stage list view
+    update_staged_files(ui, state)
+
+    # Update the source list view
+    update_source_file_list(ui, state)

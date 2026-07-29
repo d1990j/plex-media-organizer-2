@@ -10,6 +10,14 @@ class MediaFile:
         self.type = type
         self.staged = False
 
+    def __str__(self):
+        """Returns readable string of media file."""
+        name = self.new_name if self.new_name else self.file_name
+        if self.season and self.episode:
+            return f"{name} S{self.season} E{self.episode}"
+        else:
+            return f"{name}"
+
     def get_plex_folder_series_name(self) -> str:
         """Return the name of the file folder for the series using the Plex naming convention."""
         plex_name = f"{self.new_name} ({self.year})" if self.year else f"{self.new_name}"

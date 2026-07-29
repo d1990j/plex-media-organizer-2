@@ -196,53 +196,7 @@ class UI:
 
     def on_click_stage_file(self):
         """Stage selected file for naming."""
-        # Get a ref to the selected index
-        index = self.state.selected_file_index[Keys.INDEX]
-
-        # If a staged file is selected, unstage the file and reload.
-        if self.state.media_files[index].staged == True:
-            self.state.media_files[index].staged = False
-        # If not a staged file, then stage the file based on if movie or tv.
-        elif self.tv_movie_switch.value: # If True, is Movie, otherwise is TV
-            # Stage movie file
-            self.state.media_files[index].new_name = self.title_textfield.value
-            self.state.media_files[index].year = self.year_textfield.value
-
-            # Set the media type
-            self.state.media_files[index].type = MediaType.MOVIE
-
-            # Set the stage value to True
-            self.state.media_files[index].staged = True
-
-            # Set value for last staged file is tv to false
-            self.state.last_staged_was_tv = False
-
-            print(f"New movie staged: {self.state.media_files[index]}")
-        else:
-            print("Stage start for TV file")
-
-            # Stage TV file
-            self.state.media_files[index].new_name = self.title_textfield.value
-            self.state.media_files[index].year = self.year_textfield.value
-            self.state.media_files[index].season = self.season_textfield.value
-            self.state.media_files[index].episode = self.episode_textfield.value
-
-            # Set the media type
-            self.state.media_files[index].type = MediaType.TV
-
-            # Set the stage value to true
-            self.state.media_files[index].staged = True
-
-            # Set value for last staged file is tv to true
-            self.state.last_staged_was_tv = True
-
-            print(f"New TV show staged: {self.state.media_files[index]}")
-
-        # Update the stage list view
-        logic.update_staged_files(self, self.state)
-
-        # Update the source list view
-        logic.update_source_file_list(self, self.state)
+        logic.stage_file(self.state, self)
     
     ########################### Add items to page #############################
     def build_page(self):
