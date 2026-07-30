@@ -197,6 +197,20 @@ class UI:
     def on_click_stage_file(self):
         """Stage selected file for naming."""
         logic.stage_file(self.state, self)
+
+    def error_popup(self, error: str):
+        """Generate an error popup using a text string for the message."""
+        def on_click_close(e):
+            popup.open = False
+            self.page.update()
+
+        popup = ft.AlertDialog(
+            title="Error",
+            content=ft.Text(error),
+            actions=[ft.TextButton("Ok", on_click=on_click_close)]
+        )
+
+        self.page.show_dialog(popup)
     
     ########################### Add items to page #############################
     def build_page(self):

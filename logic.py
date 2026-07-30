@@ -271,6 +271,13 @@ def stage_file(state: state.AppState, ui: ui.UI):
     # Get a ref to the selected index
     index = state.selected_file_index[Keys.INDEX]
 
+    # Check to make sure nothing using new name already
+    for file in state.media_files:
+        if file.staged and file.new_name == ui.title_textfield.value:
+            print(f"File already exists by that name!")
+            ui.error_popup("File already exists by that name!")
+            return
+
     # If a staged file is selected, unstage the file and reload
     if state.media_files[index].staged:
         state.media_files[index].staged = False
