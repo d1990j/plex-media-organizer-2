@@ -198,8 +198,8 @@ class UI:
         """Stage selected file for naming."""
         logic.stage_file(self.state, self)
 
-    def error_popup(self, error: str):
-        """Generate an error popup using a text string for the message."""
+    def show_popup(self, error: str):
+        """Generate a popup using a text string for the message."""
         def on_click_close(e):
             popup.open = False
             self.page.update()

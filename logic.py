@@ -202,6 +202,9 @@ def organize_files(state: state.AppState, ui: ui.UI):
         print("WARNING: No source and/or destination path selected")
         return
 
+    # boolean used to track if all files are transferred for a later check
+    all_files_transferred = True
+
     # For each media file
     # >> If has media type selected
     # >> If "Movie" organize as needed
@@ -227,11 +230,11 @@ def organize_files(state: state.AppState, ui: ui.UI):
             ext = os.path.splitext(file.file_name)[1]
             new_path = os.path.join(dest_dir, f"{folder_name}{ext}")
 
-            # Check if path exists
+            # Check if path exists, if it does skip moving file, if not then move file
             if os.path.exists(new_path):
-                raise FileExistsError(f"Error: the file '{new_path}' already exists.")
-            
-            shutil.move(old_path, new_path)
+                all_files_transferred = False
+            else:
+                shutil.move(old_path, new_path)
 
         elif m.type == MediaType.TV and m.staged:
             file = m
@@ -252,20 +255,23 @@ def organize_files(state: state.AppState, ui: ui.UI):
             new_name = f"{title} ({year}) - S{season.zfill(2)}E{episode.zfill(2)}{ext}"
             new_path = os.path.join(dest_dir, new_name)
 
-            # Check if path exists
+            # Check if path exists, if it does skip moving file, if not then move file
             if os.path.exists(new_path):
-                raise FileExistsError(f"Error: the file '{new_path}' already exists.")
-
-            shutil.move(old_path, new_path)
+                all_files_transferred = False
+            else:
+                shutil.move(old_path, new_path)
 
         else:
             pass
 
-    # Display completion message
-    print("Done - Files have been organized into their folders.")
-
-    # Reload the files
-    load_media_files(ui, state)
+    # Display completion message, if all files are transferred confirm, otherwise inform some were not
+    if all_files_transferred:
+        ui.show_popup("All files moved to destination!")
+        load_media_files(ui, state)
+    else:
+        ui.show_popup("Some files skipped for names already existing.")
+        update_staged_files(ui, state)
+        update_source_file_list(ui, state)
 
 def stage_file(state: state.AppState, ui: ui.UI):
     # Get a ref to the selected index
@@ -275,7 +281,7 @@ def stage_file(state: state.AppState, ui: ui.UI):
     for file in state.media_files:
         if file.staged and file.new_name == ui.title_textfield.value:
             print(f"File already exists by that name!")
-            ui.error_popup("File already exists by that name!")
+            ui.show_popup("File already exists by that name!")
             return
 
     # If a staged file is selected, unstage the file and reload

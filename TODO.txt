@@ -3,8 +3,11 @@
 >> Allow for setting default filepaths
 
 IN PROCESS
->> Make sure files cannot be overwritten
 
 DONE
 >> Create a mediafile class that allows creation of mediafile objects, movie or tv, that can replace the dicts currently used
 >> Move logic for staging to logic.py rather than in the ui.py
+>> Make sure files cannot be overwritten
+    >> Instead of a fatal error, skip files in organize_files that already exist and
+    >> at the end of organize_files, display a message that some files were not
+    >> moved due to already existing in destination.
