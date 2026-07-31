@@ -1,11 +1,11 @@
 [project]
 name = "plex-organizer"
 version = "0.1.0"
-description = ""
+description = "Easily organize media files for export to a Plex Media Server."
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
-    { name = "Flet developer", email = "you@example.com" }
+    { name = "Dewain Jones", email = "dev@dewainjones.com" }
 ]
 dependencies = [
     "flet>=0.86.0"
@@ -26,10 +26,10 @@ asyncio_mode = "auto"
 testpaths = ["tests"]
 
 [tool.flet]
-org = "com.mycompany"
+org = "com.dewainjones"
 product = "plex-organizer"
-company = "Flet"
-copyright = "Copyright (C) 2023-2026 by Flet"
+company = "Dewain Jones"
+copyright = "Copyright (C) 2026 by Dewain Jones"
 
 [tool.flet.app]
 path = "src"
