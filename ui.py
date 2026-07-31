@@ -205,7 +205,7 @@ class UI:
             self.page.update()
 
         popup = ft.AlertDialog(
-            title="Error",
+            title="Alert",
             content=ft.Text(error),
             actions=[ft.TextButton("Ok", on_click=on_click_close)]
         )
