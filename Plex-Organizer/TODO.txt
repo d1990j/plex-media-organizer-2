@@ -1,7 +1,9 @@
 
 >> Allow for setting default filepaths
 >> Add toolbar to top of program
->> Change browse button names to reflect their purpose
+    >> Instead of using an AppBar item, use a MenuBar for drop down menu options
+>> Show the source and destination file location information in short form rather
+>>>> than the entire string.
 
 IN PROCESS
 
@@ -13,3 +15,4 @@ DONE
     >> at the end of organize_files, display a message that some files were not
     >> moved due to already existing in destination.
 >> Adjust starting program dimensions (No longer desired)
+>> Change browse button names to reflect their purpose

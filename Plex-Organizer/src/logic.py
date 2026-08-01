@@ -192,6 +192,7 @@ def fill_selected_file_fields(ui: ui.UI, title: str, year: str, type: MediaType,
         ui.title_textfield.value = title
         ui.year_textfield.value = year
         ui.tv_movie_switch.value = True if type == MediaType.MOVIE else False
+        ui.on_click_tv_movie_switch() # Update the text boxes
         ui.season_textfield.value = season
         ui.episode_textfield.value = episode
         ui.selected_info_container.update()
