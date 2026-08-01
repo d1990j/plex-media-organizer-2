@@ -1,5 +1,7 @@
 
 >> Allow for setting default filepaths
+>> Add toolbar to top of program
+>> Change browse button names to reflect their purpose
 
 IN PROCESS
 

@@ -10,11 +10,11 @@ class UI:
     
         ########################## Buttons ############################
         self.source_button = ft.Button(
-            content="Browse",
+            content="Source",
             on_click=self.on_click_browse_source_file
         )
         self.destination_button = ft.Button(
-            content="Browse",
+            content="Destination",
             on_click=self.on_click_browse_destination_file
         )
         self.play_button = ft.Button(
@@ -77,6 +77,14 @@ class UI:
         self.destination_directory_path = ft.Text(
             "None Selected"
         )
+
+        ########################## App Bar ############################
+        self.app_bar = ft.AppBar(
+            leading=ft.Icon(ft.Icons.MENU),
+            bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST
+        )
+
+        page.appbar = self.app_bar
 
         ########################## Top row container ########################
         self.top_container = ft.Container(
